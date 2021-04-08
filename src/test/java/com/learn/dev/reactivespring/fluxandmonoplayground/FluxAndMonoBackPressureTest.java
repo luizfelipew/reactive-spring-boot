@@ -1,7 +1,6 @@
 package com.learn.dev.reactivespring.fluxandmonoplayground;
 
 import org.junit.jupiter.api.Test;
-import org.reactivestreams.Subscriber;
 import reactor.core.publisher.BaseSubscriber;
 import reactor.core.publisher.Flux;
 import reactor.test.StepVerifier;
