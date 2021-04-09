@@ -6,10 +6,14 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.data.mongo.DataMongoTest;
 import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 import reactor.test.StepVerifier;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
+
+import static java.util.Objects.*;
 
 @DataMongoTest
 public class ItemReactiveRepositoryTest {
@@ -55,6 +59,16 @@ public class ItemReactiveRepositoryTest {
         StepVerifier.create(itemReactiveRepository.findByDescription("Bose Headphones").log("findItemByDescription: "))
                 .expectSubscription()
                 .expectNextCount(1)
+                .verifyComplete();
+    }
+
+    @Test
+    void saveItem() {
+        Item item = new Item(null, "Google Home Mini", 30.00);
+        Mono<Item> savedItem = itemReactiveRepository.save(item);
+        StepVerifier.create(savedItem.log("savedItem : "))
+                .expectSubscription()
+                .expectNextMatches(item1 -> nonNull(item1.getId()) && item1.getDescription().equals("Google Home Mini"))
                 .verifyComplete();
     }
 }
