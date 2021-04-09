@@ -71,4 +71,22 @@ public class ItemReactiveRepositoryTest {
                 .expectNextMatches(item1 -> nonNull(item1.getId()) && item1.getDescription().equals("Google Home Mini"))
                 .verifyComplete();
     }
+
+    @Test
+    void updateItem() {
+        double newPrice = 520.00;
+        Flux<Item> updatedItem = itemReactiveRepository.findByDescription("LG TV")
+                .map(item -> {
+                    item.setPrice(newPrice);
+                    return item;
+                })
+                .flatMap(item -> {
+                    return itemReactiveRepository.save(item);
+                });
+
+        StepVerifier.create(updatedItem)
+                .expectSubscription()
+                .expectNextMatches(item -> item.getPrice() == newPrice)
+                .verifyComplete();
+    }
 }
