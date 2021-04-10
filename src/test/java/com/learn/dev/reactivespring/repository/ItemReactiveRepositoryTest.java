@@ -11,9 +11,8 @@ import reactor.test.StepVerifier;
 
 import java.util.Arrays;
 import java.util.List;
-import java.util.Objects;
 
-import static java.util.Objects.*;
+import static java.util.Objects.nonNull;
 
 @DataMongoTest
 public class ItemReactiveRepositoryTest {
@@ -75,7 +74,7 @@ public class ItemReactiveRepositoryTest {
     @Test
     void updateItem() {
         double newPrice = 520.00;
-        Flux<Item> updatedItem = itemReactiveRepository.findByDescription("LG TV")
+        Mono<Item> updatedItem = itemReactiveRepository.findByDescription("LG TV")
                 .map(item -> {
                     item.setPrice(newPrice);
                     return item;
@@ -87,6 +86,41 @@ public class ItemReactiveRepositoryTest {
         StepVerifier.create(updatedItem)
                 .expectSubscription()
                 .expectNextMatches(item -> item.getPrice() == newPrice)
+                .verifyComplete();
+    }
+
+    @Test
+    void deleteItemById() {
+        Mono<Void> deletedItem = itemReactiveRepository.findById("ABC") // Mono<Item>
+                .map(Item::getId) // get Id -> Transform from one type to another type
+                .flatMap(id -> {
+                    return itemReactiveRepository.deleteById(id);
+                });
+
+        StepVerifier.create(deletedItem.log())
+                .expectSubscription()
+                .verifyComplete();
+
+        StepVerifier.create(itemReactiveRepository.findAll().log("The new item list : "))
+                .expectSubscription()
+                .expectNextCount(4)
+                .verifyComplete();
+    }
+
+    @Test
+    void deleteItem() {
+        Mono<Void> deletedItem = itemReactiveRepository.findByDescription("LG TV") // Mono<Item>
+                .flatMap(item -> {
+                    return itemReactiveRepository.delete(item);
+                });
+
+        StepVerifier.create(deletedItem.log())
+                .expectSubscription()
+                .verifyComplete();
+
+        StepVerifier.create(itemReactiveRepository.findAll().log("The new item list : "))
+                .expectSubscription()
+                .expectNextCount(4)
                 .verifyComplete();
     }
 }
