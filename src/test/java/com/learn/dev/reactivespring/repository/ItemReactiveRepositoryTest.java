@@ -3,8 +3,13 @@ package com.learn.dev.reactivespring.repository;
 import com.learn.dev.reactivespring.document.Item;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.data.mongo.AutoConfigureDataMongo;
 import org.springframework.boot.test.autoconfigure.data.mongo.DataMongoTest;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.annotation.DirtiesContext;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import reactor.test.StepVerifier;
@@ -15,6 +20,8 @@ import java.util.List;
 import static java.util.Objects.nonNull;
 
 @DataMongoTest
+@ExtendWith(SpringExtension.class)
+@DirtiesContext
 public class ItemReactiveRepositoryTest {
 
     @Autowired
