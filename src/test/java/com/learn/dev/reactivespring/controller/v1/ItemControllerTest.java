@@ -15,10 +15,13 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.reactive.server.WebTestClient;
 import reactor.core.publisher.Flux;
+import reactor.test.StepVerifier;
 
 import java.util.List;
 
 import static java.util.Arrays.asList;
+import static java.util.Objects.nonNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @SpringBootTest
 @ExtendWith(SpringExtension.class)
@@ -61,6 +64,39 @@ class ItemControllerTest {
                 .expectHeader().contentType(MediaType.APPLICATION_JSON)
                 .expectBodyList(Item.class)
                 .hasSize(4);
+    }
 
+    @Test
+    void getAllItems_approach2() {
+        webTestClient
+                .get()
+                .uri(ItemConstants.ITEM_END_POINT_V1)
+                .exchange()
+                .expectStatus().isOk()
+                .expectHeader().contentType(MediaType.APPLICATION_JSON)
+                .expectBodyList(Item.class)
+                .hasSize(4)
+                .consumeWith((response) -> {
+                    List<Item> items = response.getResponseBody();
+                    items.forEach((item) -> {
+                        assertTrue(nonNull(item.getId()));
+                    });
+                });
+    }
+
+    @Test
+    void getAllItems_approach3() {
+        Flux<Item> itemsFlux = webTestClient
+                .get()
+                .uri(ItemConstants.ITEM_END_POINT_V1)
+                .exchange()
+                .expectStatus().isOk()
+                .expectHeader().contentType(MediaType.APPLICATION_JSON)
+                .returnResult(Item.class)
+                .getResponseBody();
+
+        StepVerifier.create(itemsFlux.log("value from network : "))
+                .expectNextCount(4)
+                .verifyComplete();
     }
 }
