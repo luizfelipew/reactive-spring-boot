@@ -1,6 +1,8 @@
 spring:
   profiles:
     active: nonprod
+  main:
+    allow-bean-definition-overriding: true
 ---
 spring:
   profiles: dev
