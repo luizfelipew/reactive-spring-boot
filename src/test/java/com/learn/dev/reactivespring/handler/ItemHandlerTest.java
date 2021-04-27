@@ -88,7 +88,7 @@ public class ItemHandlerTest {
     void getAllItems_approach3() {
         Flux<Item> itemsFlux = webTestClient
                 .get()
-                .uri(ItemConstants.ITEM_END_POINT_V1)
+                .uri(ItemConstants.ITEM_FUNCTIONAL_END_POINT_V1)
                 .exchange()
                 .expectStatus().isOk()
                 .expectHeader().contentType(MediaType.APPLICATION_JSON)
@@ -98,6 +98,26 @@ public class ItemHandlerTest {
         StepVerifier.create(itemsFlux.log("value from network : "))
                 .expectNextCount(4)
                 .verifyComplete();
+    }
+
+    @Test
+    void getOneItem() {
+        webTestClient
+                .get()
+                .uri(ItemConstants.ITEM_FUNCTIONAL_END_POINT_V1.concat("/{id}"), "ABC")
+                .exchange()
+                .expectStatus().isOk()
+                .expectBody()
+                .jsonPath("$.price", 149.99);
+    }
+
+    @Test
+    void getOneItem_notFound() {
+        webTestClient
+                .get()
+                .uri(ItemConstants.ITEM_FUNCTIONAL_END_POINT_V1.concat("/{id}"), "DEF")
+                .exchange()
+                .expectStatus().isNotFound();
     }
 
 }
