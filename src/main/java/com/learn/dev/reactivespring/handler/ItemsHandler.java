@@ -11,7 +11,6 @@ import org.springframework.web.reactive.function.server.ServerResponse;
 import reactor.core.publisher.Mono;
 
 import static org.springframework.web.reactive.function.BodyInserters.fromObject;
-import static org.springframework.web.reactive.function.BodyInserters.fromProducer;
 
 @Component
 public class ItemsHandler {
