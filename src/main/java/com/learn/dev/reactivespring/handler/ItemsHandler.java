@@ -43,7 +43,7 @@ public class ItemsHandler {
 
         return itemToBeInserted
                 .flatMap(item ->
-                        ServerResponse.ok()
+                        ServerResponse.status(HttpStatus.CREATED)
                                 .contentType(MediaType.APPLICATION_JSON)
                                 .body(itemReactiveRepository.save(item), Item.class));
     }
