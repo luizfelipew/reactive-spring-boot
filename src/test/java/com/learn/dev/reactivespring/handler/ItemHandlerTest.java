@@ -138,4 +138,15 @@ public class ItemHandlerTest {
                 .jsonPath("$.price").isEqualTo(999.99);
     }
 
+    @Test
+    void deleteItem() {
+        webTestClient
+                .delete()
+                .uri(ItemConstants.ITEM_FUNCTIONAL_END_POINT_V1.concat("/{id}"), "ABC")
+                .accept(MediaType.APPLICATION_JSON)
+                .exchange()
+                .expectStatus().isOk()
+                .expectBody(Void.class);
+    }
+
 }

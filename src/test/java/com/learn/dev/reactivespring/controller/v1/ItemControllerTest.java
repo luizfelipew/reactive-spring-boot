@@ -147,8 +147,6 @@ class ItemControllerTest {
                 .exchange()
                 .expectStatus().isOk()
                 .expectBody(Void.class);
-
-
     }
 
     @Test
