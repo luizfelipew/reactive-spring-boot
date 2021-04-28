@@ -11,6 +11,7 @@ import org.springframework.web.reactive.function.server.ServerResponse;
 import reactor.core.publisher.Mono;
 
 import static org.springframework.web.reactive.function.BodyInserters.fromObject;
+import static org.springframework.web.reactive.function.BodyInserters.fromProducer;
 
 @Component
 public class ItemsHandler {
@@ -55,5 +56,27 @@ public class ItemsHandler {
                 .ok()
                 .contentType(MediaType.APPLICATION_JSON)
                 .body(deleteItem, Void.class);
+    }
+
+    public Mono<ServerResponse> updateItem(ServerRequest serverRequest) {
+        String id = serverRequest.pathVariable("id");
+
+        Mono<Item> updatedItem = serverRequest.bodyToMono(Item.class)
+                .flatMap(item -> {
+                    Mono<Item> itemMono = itemReactiveRepository.findById(id)
+                            .flatMap(currentItem -> {
+                                currentItem.setDescription(item.getDescription());
+                                currentItem.setPrice(item.getPrice());
+                                return itemReactiveRepository.save(currentItem);
+                            });
+                    return itemMono;
+                });
+        return updatedItem
+                .flatMap(item ->
+                        ServerResponse
+                                .ok()
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .body(fromObject(item)))
+                .switchIfEmpty(notFound);
     }
 }
