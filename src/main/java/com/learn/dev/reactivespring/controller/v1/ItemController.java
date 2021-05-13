@@ -16,14 +16,6 @@ import static com.learn.dev.reactivespring.constants.ItemConstants.ITEM_END_POIN
 @Slf4j
 public class ItemController {
 
-    @ExceptionHandler(RuntimeException.class)
-    public ResponseEntity<String> handleRuntimeException(RuntimeException ex){
-        log.error("Exception caught in handleRuntimeException : {}", ex);
-        return ResponseEntity
-                .status(HttpStatus.INTERNAL_SERVER_ERROR)
-                .body(ex.getMessage());
-    }
-
     @Autowired
     ItemReactiveRepository itemReactiveRepository;
 
