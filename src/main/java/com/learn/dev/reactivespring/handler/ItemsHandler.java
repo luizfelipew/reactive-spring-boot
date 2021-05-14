@@ -70,6 +70,7 @@ public class ItemsHandler {
                             });
                     return itemMono;
                 });
+
         return updatedItem
                 .flatMap(item ->
                         ServerResponse
@@ -77,5 +78,9 @@ public class ItemsHandler {
                                 .contentType(MediaType.APPLICATION_JSON)
                                 .body(fromObject(item)))
                 .switchIfEmpty(notFound);
+    }
+
+    public Mono<ServerResponse> itemsEx(ServerRequest serverRequest) {
+        throw new RuntimeException("RuntimeException Occurred");
     }
 }
