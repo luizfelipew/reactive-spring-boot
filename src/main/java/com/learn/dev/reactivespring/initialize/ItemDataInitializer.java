@@ -40,12 +40,15 @@ public class ItemDataInitializer implements CommandLineRunner {
     }
 
     private void createCappedCollection() {
-        mongoOperations.dropCollection(ItemCapped.class);
-        mongoOperations.createCollection(ItemCapped.class, CollectionOptions.empty().maxDocuments(20).size(50000).capped());
+        mongoOperations.dropCollection(ItemCapped.class)
+                .then(mongoOperations.createCollection(ItemCapped.class,
+                        CollectionOptions.empty().maxDocuments(20).size(50000).capped()))
+                .subscribe();
+
     }
 
     public List<Item> data() {
-       return asList(new Item(null, "Samsung TV", 399.99),
+        return asList(new Item(null, "Samsung TV", 399.99),
                 new Item(null, "LG TV", 329.99),
                 new Item(null, "Apple Watch", 349.99),
                 new Item("ABC", "Beats HeadPhones", 149.99));

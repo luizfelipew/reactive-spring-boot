@@ -9,5 +9,4 @@ public interface ItemReactiveCappedRepository extends ReactiveMongoRepository<It
 
     @Tailable
     Flux<ItemCapped> findItemsBy();
-
 }
